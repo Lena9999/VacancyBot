@@ -36,7 +36,8 @@ class AddSkillsDialog:
             entry_points=[
                 CallbackQueryHandler(
                     self.handle_new_skills_button, pattern="^add_new_skills$"
-                )
+                ),
+                # CommandHandler("new_skills", self.start_skills_dialog),
             ],
             states={
                 self.STATE_ADD_NEW_SKILLS: [
@@ -53,6 +54,7 @@ class AddSkillsDialog:
             allow_reentry=True,
             name="add_skills_dialog",
             persistent=True,
+            per_message=False
         )
 
     async def start_skills_dialog(
