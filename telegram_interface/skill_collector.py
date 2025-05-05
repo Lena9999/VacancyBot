@@ -145,11 +145,7 @@ class AddSkillsDialog:
         all_skills = context.user_data["skills"]
         await update.message.reply_text(f"Here are your current skills: {', '.join(all_skills)}")
 
-        keyboard = [
-            [InlineKeyboardButton("✅ Complete", callback_data="cancel")]
-        ]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await update.message.reply_text("Click when you're done", reply_markup=reply_markup)
+        await update.message.reply_text("Skill collection completed!")
 
         return ConversationHandler.END
 
