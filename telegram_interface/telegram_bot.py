@@ -1,4 +1,3 @@
-from telegram import Update
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputFile
 from telegram.ext import (
     Application,
@@ -6,13 +5,11 @@ from telegram.ext import (
     MessageHandler,
     filters,
     ContextTypes,
-    PicklePersistence,
     CallbackQueryHandler,
 )
 from datetime import datetime
 import json
 from .job_form_template.form_parser import parse_form
-from .skill_collector import AddSkillsDialog
 from pathlib import Path
 import os
 
@@ -28,20 +25,14 @@ TEMPLATE_PATH = (
 class TelegramBot:
     CALLBACK_DOWNLOAD = "download_template"
 
-    def __init__(self, token: str, persistence_path: str = "user_data.pickle"):
+    def __init__(self, token: str):
         self.token = token
-        self.persistence_path = persistence_path
 
         # check that the folders for storing data exist
         CANDIDATE_FORM_DIR.mkdir(parents=True, exist_ok=True)
         PARSED_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-        persistence = PicklePersistence(filepath=self.persistence_path)
-        self.application = (
-            Application.builder().token(self.token).persistence(persistence).build()
-        )
-        self.skills_dialog = AddSkillsDialog(
-            persistence_path=self.persistence_path)
+        self.application = Application.builder().token(self.token).build()
         self._register_handlers()
 
     def _register_handlers(self) -> None:
@@ -62,10 +53,6 @@ class TelegramBot:
                 filters.Document.ALL & ~filters.COMMAND, self.process_uploaded_form
             )
         )
-        self.application.add_handler(self.skills_dialog.get_handler())
-        self.application.add_handler(
-            CommandHandler("add_skills", self.start_skills_dialog)
-        )
         self.application.add_handler(
             MessageHandler(filters.TEXT & ~filters.COMMAND, self.echo)
         )
@@ -73,20 +60,24 @@ class TelegramBot:
     async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         user = update.effective_user
         await update.message.reply_text(
-            f"Hello, {user.first_name}! I am your new bot. Use /add_skills to add your skills to your profile, "
-            "or /fill_form to submit a job preferences form."
+            f"Hello, {user.first_name}!\n"
+            "I am your new bot. Here’s what I can do:\n\n"
+            "- /fill_form — Submit a job preferences form\n"
+            "- /view_form — View your latest submitted form\n"
+            "- /help — See the available commands\n\n"
+            "Let’s get started!"
         )
 
     async def help_command(
         self, update: Update, context: ContextTypes.DEFAULT_TYPE
     ) -> None:
         await update.message.reply_text(
-            "I can help you manage your skills profile. Available commands:\n"
-            "/start - Start the bot\n"
-            "/help - Show this help message\n"
-            "/add_skills - Add new skills to your profile\n"
-            "/fill_form - Download and fill out a job preferences form\n"
-            "/view_form - View your latest submitted form"
+            "I can help you manage your job preferences form. Here’s what I can do:\n\n"
+            "- /start — Start the bot\n"
+            "- /help — Show this help message\n"
+            "- /fill_form — Download and fill out a job preferences form\n"
+            "- /view_form — View your latest submitted form\n\n"
+            "Let’s get started!"
         )
 
     async def echo(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -186,11 +177,6 @@ class TelegramBot:
             await update.message.reply_document(
                 document=InputFile(f, filename="job_form.txt")
             )
-
-    async def start_skills_dialog(
-        self, update: Update, context: ContextTypes.DEFAULT_TYPE
-    ) -> None:
-        await self.skills_dialog.send_add_skills_button(update, context)
 
     def run(self) -> None:
         self.application.run_polling()
