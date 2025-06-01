@@ -1,0 +1,34 @@
+
+===============================
+💬 Job Preferences Form
+===============================
+
+Please fill out the fields below to help us match you with the most suitable job opportunities.
+If you're unsure or flexible about a certain field, feel free to leave it blank — we will consider all possible options.
+
+🧍 City:
+# Example: Moscow
+
+🚚 Willing to relocate?:
+# Example: yes / no
+
+💼 Preferred work format:
+# Example: remote, hybrid
+
+📌 Employment type:
+# Example: full, part, project, volunteer, internship
+
+⏰ Work schedule:
+# Example: fullDay, flexible, shift, flyInFlyOut
+
+💰 Minimum desired salary:
+# Example: 120000
+
+💱 Currency:
+# Example: RUB, USD
+
+🛠 Skills:
+# Example: Python, Django, REST API, PostgreSQL, Docker
+
+📝 Additional notes:
+# Example: Open to startups and remote-first companies
