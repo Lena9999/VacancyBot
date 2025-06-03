@@ -69,7 +69,7 @@ def parse_form(form_text):
         city_text = data.pop("area")
         city_id = get_city_id(city_text)
         if city_id is not None:
-            api_params["area_id"] = city_id
+            api_params["area"] = city_id
         else:
             api_params["area"] = city_text
 
