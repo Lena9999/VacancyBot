@@ -14,6 +14,39 @@ from pathlib import Path
 import os
 from vacancy_site_apis.hh_api import HHClient
 
+"""
+Module: telegram_interface.telegram_bot
+
+Purpose:
+--------
+Implements the Telegram bot interface for VacancyBot. This class handles user interaction,
+form collection and parsing, and job search operations by integrating with the HeadHunter (hh.ru) API.
+
+Key Components:
+---------------
+- Directories used for data:
+    - `CANDIDATE_FORM_DIR`: Stores uploaded raw text forms from users.
+    - `PARSED_DATA_DIR`: Stores parsed JSON data for each user, used to query hh.ru.
+
+- `handle_job_search_flow`: Core method that loads user preferences, performs the search, and triggers pagination display.
+- `perform_job_search` and `job_pagination_callback`: Enable browsing through search results via inline buttons.
+
+Bot Commands:
+-------------
+- `/start`: Welcomes the user and describes the bot's functionality.
+- `/help`: Lists available commands and how to use them.
+- `/fill_form`: Offers the user a form template to specify job search preferences.
+- `/view_form`: Lets the user download their last uploaded form.
+- `/search`: Triggers a job search using the submitted preferences.
+
+Usage Notes:
+------------
+- User must first submit a correctly formatted `.txt` file using the form template.
+- After parsing, preferences are saved in `{user_id}.json`, where the first element
+  must be a dictionary of parameters directly acceptable by the hh.ru API.
+"""
+
+
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 PARSED_DATA_DIR = PROJECT_ROOT / "data" / "bot_user_data" / "parsed_user_data"
 CANDIDATE_FORM_DIR = PROJECT_ROOT / "data" / "bot_user_data" / "candidate_form"
@@ -105,7 +138,6 @@ class TelegramBot:
         await update.message.reply_text(update.message.text)
 
     # form handling
-
     async def ask_user_to_fill_form(
         self, update: Update, context: ContextTypes.DEFAULT_TYPE
     ) -> None:
@@ -226,8 +258,17 @@ class TelegramBot:
         await self.handle_job_search_flow(user_id, context)
 
     async def handle_job_search_flow(
-        self, user_id: int, context: ContextTypes.DEFAULT_TYPE
-    ):
+            self, user_id: int, context: ContextTypes.DEFAULT_TYPE):
+        """
+        This function is triggered when a user initiates a job search via the /search command
+        or the "🔍 Search jobs for me" inline button. It loads the user's job preferences
+        (previously parsed and saved as JSON), passes them directly to the HeadHunter (hh.ru)
+        API client, and stores the resulting list of job postings (URLs or card content)
+        in memory for pagination and user navigation.
+        Notes:
+            The job preferences file must exist at PARSED_DATA_DIR/{user_id}.json
+            and must be a list where the first element is a dictionary of valid hh.ru API search parameters.
+        """
         # Notify the user
         await context.bot.send_message(
             chat_id=user_id, text="🔍 Finding jobs based on your filters, one moment..."
