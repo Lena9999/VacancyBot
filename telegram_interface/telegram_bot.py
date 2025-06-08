@@ -297,50 +297,50 @@ class TelegramBot:
 
     # Searching jobs buttons
     async def perform_job_search(
-        self, user_id: int, context: ContextTypes.DEFAULT_TYPE
-    ):
+            self, user_id: int, context: ContextTypes.DEFAULT_TYPE):
+
         job_cards = self.user_job_cards.get(user_id, [])
 
-        # Checking that at least one vacancy was found.
         if not job_cards:
             await context.bot.send_message(
                 chat_id=user_id,
                 text="❌ Unfortunately, we couldn't find any vacancies matching your criteria. Please try changing your filters.",
             )
             return
+
         page = 0
-        keyboard = InlineKeyboardMarkup(
-            [[InlineKeyboardButton(
-                "➡️ Next", callback_data=f"job#{page + 1}")]]
-        )
+        total = len(job_cards)
+        vacancy_text = f"📄  Viewing job {page + 1}/{total}\n\n{job_cards[page]}"
+        keyboard = InlineKeyboardMarkup([
+            [InlineKeyboardButton("➡️ Next", callback_data=f"job#{page + 1}")]
+        ])
 
         await context.bot.send_message(
-            chat_id=user_id, text=job_cards[page], reply_markup=keyboard
+            chat_id=user_id, text=vacancy_text, reply_markup=keyboard
         )
 
     async def job_pagination_callback(
-        self, update: Update, context: ContextTypes.DEFAULT_TYPE
-    ):
+            self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         query = update.callback_query
         await query.answer()
         user_id = query.message.chat.id
         job_cards = self.user_job_cards.get(user_id, [])
+
         page = int(query.data.split("#")[1])
+        total = len(job_cards)
+        vacancy_text = f"📄  Viewing job {page + 1}/{total}\n\n{job_cards[page]}"
+
         buttons = []
         if page > 0:
-            buttons.append(
-                InlineKeyboardButton(
-                    "⬅️ Back", callback_data=f"job#{page - 1}")
-            )
-        if page < len(job_cards) - 1:
-            buttons.append(
-                InlineKeyboardButton(
-                    "➡️ Next", callback_data=f"job#{page + 1}")
-            )
+            buttons.append(InlineKeyboardButton(
+                "⬅️ Back", callback_data=f"job#{page - 1}"))
+        if page < total - 1:
+            buttons.append(InlineKeyboardButton(
+                "➡️ Next", callback_data=f"job#{page + 1}"))
 
-        keyboard = InlineKeyboardMarkup([buttons])
+        keyboard = InlineKeyboardMarkup([buttons]) if buttons else None
 
-        await query.edit_message_text(text=job_cards[page], reply_markup=keyboard)
+        await query.edit_message_text(text=vacancy_text, reply_markup=keyboard)
 
     def run(self) -> None:
         self.application.run_polling()
