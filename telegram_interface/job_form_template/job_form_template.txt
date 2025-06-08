@@ -9,26 +9,31 @@ If you're unsure or flexible about a certain field, feel free to leave it blank 
 🧍 City:
 # Example: Moscow
 
-🚚 Willing to relocate?:
-# Example: yes / no
-
-💼 Preferred work format:
-# Example: remote, hybrid
+💼 Schedule:
+# Example: remote, fullDay, flexible, shift
+# You can list multiple options separated by commas.
 
 📌 Employment type:
-# Example: full, part, project, volunteer, internship
-
-⏰ Work schedule:
-# Example: fullDay, flexible, shift, flyInFlyOut
-
-💰 Minimum desired salary:
-# Example: 120000
-
-💱 Currency:
-# Example: RUB, USD
+# Example: full, part, project, probation
+# You can list multiple options separated by commas.
 
 🛠 Skills:
 # Example: Python, Django, REST API, PostgreSQL, Docker
 
+🗓️ Show jobs published after:
+# Example: 2025-12-01 (format: YYYY-MM-DD)
+
+💰 Minimum desired salary: 
+# Example: 120000
+
+🚚 Willing to relocate?:
+# Example: yes / no
+
+💱 Currency:
+# Example: RUB, USD
+# If not specified, RUR (Russian Rubles) is used by default.
+
 📝 Additional notes:
 # Example: Open to startups and remote-first companies
+
+
