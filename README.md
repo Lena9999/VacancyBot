@@ -6,7 +6,7 @@ Users upload a simple text form with their job preferences, and the bot finds re
 
 ---
 
-## 🤖 Bot Interface
+## Bot Interface
 
 ### **run_bot.py**  
 
@@ -17,7 +17,7 @@ Creating a bot is free and easy — just talk to [@BotFather](https://t.me/BotFa
 
 ---
 
-## 📦 Module: `telegram_interface.telegram_bot`
+## Module: `telegram_interface.telegram_bot`
 
 **Purpose:**  
 This module implements the Telegram bot interface.  
@@ -58,12 +58,12 @@ Here is an example of how job links will appear in the chat:
 
 This module lets the Telegram bot search for jobs on HeadHunter (hh.ru) using the user's job preferences. It returns a list of relevant job vacancies.
 
-### ✅ Usage
+###  Usage
 
 - The function `search_vacancies_by_params_hh(hh_api_client, user_vacancy_hh_filters, client_id)` performs a paginated search.
 - The argument `user_vacancy_hh_filters` must be a **dictionary formatted exactly as expected by the HH API** (matching the parameter names and formats specified in the official [API docs](https://github.com/hhru/api)).
 
-### 🔗 Uses: **`vacancy_site_apis.hh_api`**
+###  Uses: **`vacancy_site_apis.hh_api`**
 
 This module uses the `HHClient` class from **`vacancy_site_apis.hh_api`** to send search requests to HeadHunter.
 
