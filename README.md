@@ -25,12 +25,6 @@ It lets users talk to the bot, fill out a form with their job preferences, and g
 
 ---
 
-<p>
-  <img src="images_for_RM/ex1.png" alt="Example Screenshot"
-       width="350"
-       style="float: right; margin-top: 20px; margin-bottom: 0px; margin-left: 40px;" />
-</p>
-
 ### 📁 Directories
 
 - `data/bot_user_data/candidate_form/`  
@@ -53,6 +47,12 @@ It lets users talk to the bot, fill out a form with their job preferences, and g
   <li><code>/view_form</code> — Returns the latest uploaded form back to the user.</li>
   <li><code>/search</code> — Initiates job search using submitted form data.</li>
 </ul>
+
+Here is an example of how job links will appear in the chat:
+
+<p align="center">
+  <img src="images_for_RM/ex1.png" alt="Example Screenshot" width="350" />
+</p>
 
 ## 🔍 Module: search_handler/searcher.py
 
