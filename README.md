@@ -6,14 +6,13 @@ Users upload a simple text form with their job preferences, and the bot finds re
 
 ---
 
-## Bot Interface
+# Bot Interface
 
-### **run_bot.py**  
+## **run_bot.py**  
 
 This file is a basic example of how to launch the bot.
 
-To use it, you need to create your own Telegram bot and get a Bot Token.  
-Creating a bot is free and easy — just talk to [@BotFather](https://t.me/BotFather) on Telegram to get started.
+To use it, you need to create your own Telegram bot and get a Bot Token. Creating a bot is free and easy.
 
 ---
 
