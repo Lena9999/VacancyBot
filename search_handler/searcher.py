@@ -19,6 +19,12 @@ Key Components:
 Usage Notes:
 ------------
 - The `user_vacancy_hh_filters` argument must be a dictionary structured exactly as expected by hh.ru's `search_simple` API method.
+
+- To change how many vacancies are fetched in total, modify the `vacancy_count_page` variable inside `search_vacancies_by_params_hh`.
+
+Each page fetches up to 100 vacancies (controlled by the `"per_page": 100` parameter).
+For example:
+    vacancy_count_page = 5   # will request up to 5 * 100 = 500 vacancies
 """
 
 
