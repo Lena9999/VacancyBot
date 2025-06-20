@@ -61,50 +61,51 @@ class TelegramBot:
     CALLBACK_SEARCH_JOBS = "search_jobs"
 
     def __init__(self, token: str):
-        self.token = token
+        self._token = token
 
         # check that the folders for storing data exist
         CANDIDATE_FORM_DIR.mkdir(parents=True, exist_ok=True)
         PARSED_DATA_DIR.mkdir(parents=True, exist_ok=True)
-        self.user_job_cards = {}
+        self._user_job_cards = {}
 
-        self.application = Application.builder().token(self.token).build()
+        self._application = Application.builder().token(self._token).build()
         self._register_handlers()
 
     def _register_handlers(self) -> None:
-        self.application.add_handler(CommandHandler("start", self.start))
-        self.application.add_handler(CommandHandler("help", self.help_command))
-        self.application.add_handler(
+        self._application.add_handler(CommandHandler("start", self.start))
+        self._application.add_handler(
+            CommandHandler("help", self.help_command))
+        self._application.add_handler(
             CommandHandler("fill_form", self.ask_user_to_fill_form)
         )
 
-        self.application.add_handler(
+        self._application.add_handler(
             CommandHandler("view_form", self.view_form))
 
-        self.application.add_handler(
+        self._application.add_handler(
             CallbackQueryHandler(
                 self.send_template_button, pattern=f"^{self.CALLBACK_DOWNLOAD}$"
             )
         )
-        self.application.add_handler(
+        self._application.add_handler(
             MessageHandler(
                 filters.Document.ALL & ~filters.COMMAND, self.process_uploaded_form
             )
         )
-        self.application.add_handler(
+        self._application.add_handler(
             MessageHandler(filters.TEXT & ~filters.COMMAND, self.echo)
         )
 
-        self.application.add_handler(
+        self._application.add_handler(
             CommandHandler("search", self.handle_search_jobs_command)
         )
 
-        self.application.add_handler(
+        self._application.add_handler(
             CallbackQueryHandler(
                 self.handle_search_jobs_button, pattern=f"^{self.CALLBACK_SEARCH_JOBS}$"
             )
         )
-        self.application.add_handler(
+        self._application.add_handler(
             CallbackQueryHandler(
                 self.job_pagination_callback, pattern=r"^job#\d+$")
         )
@@ -290,7 +291,7 @@ class TelegramBot:
 
         hh_api_client = HHClient()
 
-        self.user_job_cards[user_id] = search_vacancies_by_params_hh(
+        self._user_job_cards[user_id] = search_vacancies_by_params_hh(
             hh_api_client, hh_base_filters, user_id
         )
         await self.perform_job_search(user_id, context)
@@ -299,7 +300,7 @@ class TelegramBot:
     async def perform_job_search(
             self, user_id: int, context: ContextTypes.DEFAULT_TYPE):
 
-        job_cards = self.user_job_cards.get(user_id, [])
+        job_cards = self._user_job_cards.get(user_id, [])
 
         if not job_cards:
             await context.bot.send_message(
@@ -324,7 +325,7 @@ class TelegramBot:
         query = update.callback_query
         await query.answer()
         user_id = query.message.chat.id
-        job_cards = self.user_job_cards.get(user_id, [])
+        job_cards = self._user_job_cards.get(user_id, [])
 
         page = int(query.data.split("#")[1])
         total = len(job_cards)
@@ -343,4 +344,4 @@ class TelegramBot:
         await query.edit_message_text(text=vacancy_text, reply_markup=keyboard)
 
     def run(self) -> None:
-        self.application.run_polling()
+        self._application.run_polling()
